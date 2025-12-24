@@ -6,6 +6,9 @@ public class Mesh {
 	public uint Handle;
 	public uint Count;
 
+	public bool IsVisible(Transform transform) {
+		return true; //TODO culling
+	}
 	public unsafe void DrawInstanced(List<Transform> transforms) {
 		//TODO bind data
 		Graphics.Instance.BindVertexArray(Handle);

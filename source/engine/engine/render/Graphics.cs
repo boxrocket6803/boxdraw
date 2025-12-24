@@ -28,7 +28,6 @@ public class Graphics(Game game) {
 	}
 	private Dictionary<int,Batch> Frame {get; set;} = [];
 	public void Draw(Material material, Mesh mesh, Transform transform)  {
-		//TODO culling, might as well do it on cpu since we have to loop over everything anyway
 		var hc = HashCode.Combine(material.Id, mesh.Id);
 		if (!Frame.TryGetValue(hc, out var batch))
 			batch = Frame[hc] = new() {Material = material, Mesh = mesh};
