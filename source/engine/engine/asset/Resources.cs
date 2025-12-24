@@ -26,11 +26,11 @@ public class Resources(Game game, string folder) {
 		Reload();
 		foreach (var item in HotloadList) { //TODO better system for this
 			if (item.EndsWith(".glsl")) {
-				Graphics.Program.FlushAll();
-				Graphics.Shader.FlushAll();
+				Material.FlushAll();
+				Shader.FlushAll();
 			}
 			if (item.EndsWith(".btex") || item.EndsWith(".bpal"))
-				Graphics.Texture.Flush(this, item);
+				Texture.Flush(this, item);
 		}
 		Scene.FlushActive();
 		HotloadList.Clear();

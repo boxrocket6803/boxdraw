@@ -18,7 +18,7 @@
 		return p;
 	}
 
-	public override void Update(Graphics.Program p) {
+	public override void Update(Material p) {
 		p.Set("inv_frame_size", Vector2.Create(1f / Scene.Game.Window.FramebufferSize.X, 1f / Scene.Game.Window.FramebufferSize.Y));
 		p.Set("camera_position", Position);
 		p.Set("camera_zoom", Zoom);

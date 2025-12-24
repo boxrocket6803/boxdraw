@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-public class Scene(Game game) {
+﻿public class Scene(Game game) {
 	public Game Game = game;
 
 	public class Object {
@@ -21,7 +19,7 @@ public class Scene(Game game) {
 	}
 	public class Camera {
 		public Scene Scene;
-		public virtual void Update(Graphics.Program program) {}
+		public virtual void Update(Material program) {}
 	}
 
 	public List<Object> Objects = [];
