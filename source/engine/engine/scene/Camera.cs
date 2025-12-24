@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-public class Camera2D : Scene.Camera {
+﻿public class Camera2D : Scene.Camera {
 	public float Zoom {get; set;} = 1;
 	public Vector2 Position {get; set;}
 

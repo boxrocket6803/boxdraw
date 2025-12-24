@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.IO.Compression;
 
 public class Resources(Game game, string folder) {
@@ -25,7 +24,7 @@ public class Resources(Game game, string folder) {
 				File.Open(Path.Combine([Game.Directory, Folder, item]), FileMode.Open).Close();
 		} catch {return;}
 		Reload();
-		foreach (var item in HotloadList) {
+		foreach (var item in HotloadList) { //TODO better system for this
 			if (item.EndsWith(".glsl")) {
 				Graphics.Program.FlushAll();
 				Graphics.Shader.FlushAll();

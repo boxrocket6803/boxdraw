@@ -1,7 +1,5 @@
 ﻿using Silk.NET.OpenGL;
 using Silk.NET.Windowing;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
@@ -213,7 +211,7 @@ public class Graphics(Game game) {
 			UseProgram(this);
 			Instance.Uniform1(Instance.GetUniformLocation(Handle, property), value);
 		}
-		public void Set(string property, System.Numerics.Vector2 value) {
+		public void Set(string property, Vector2 value) {
 			if (Check(property, value))
 				return;
 			Attributes[property] = value;

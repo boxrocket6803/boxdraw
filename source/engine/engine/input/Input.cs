@@ -1,20 +1,19 @@
 ﻿using Silk.NET.Input;
 using Silk.NET.Windowing;
-using System.Collections.Generic;
 
 public class Input {
 	private IInputContext Context;
-	private readonly Dictionary<string, MouseButton> MouseMapping = new() {
+	private readonly Dictionary<string, MouseButton> MouseMapping = new() { //TODO load this from a file
 		{"DRAG", MouseButton.Middle},
 	};
-	private readonly Dictionary<string, Key> KeyMapping = new() {
+	private readonly Dictionary<string, Key> KeyMapping = new() { //TODO load this from a file
 
 	};
 	private static readonly HashSet<string> InternalPressed = [];
 	private static readonly HashSet<string> InternalDown = [];
 	private static readonly HashSet<string> InternalReleased = [];
-	public static System.Numerics.Vector2 MousePosition {get; private set;}
-	public static System.Numerics.Vector2 MouseDelta {get; private set;}
+	public static Vector2 MousePosition {get; private set;}
+	public static Vector2 MouseDelta {get; private set;}
 	public static float MouseWheel {get; set;}
 	public static bool Pressed(string action) => InternalPressed.Contains(action);
 	public static bool Down(string action) => InternalDown.Contains(action);
@@ -25,7 +24,7 @@ public class Input {
 		MousePosition = GetMouse();
 	}
 
-	private System.Numerics.Vector2 GetMouse() {
+	private Vector2 GetMouse() {
 		var pos = Context.Mice[0].Position * 2;
 		return new(pos.X, -pos.Y);
 	}

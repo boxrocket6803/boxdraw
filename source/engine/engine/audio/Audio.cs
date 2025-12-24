@@ -1,7 +1,5 @@
 ﻿using NVorbis;
 using Silk.NET.OpenAL;
-using System;
-using System.Collections.Generic;
 using System.IO;
 
 public class Audio(Game game) {
@@ -71,9 +69,9 @@ public class Audio(Game game) {
 			if (position >= Buffers[LoadIndex].Start && LoadIndex + 1 < Buffers.Count)
 				Chunk();
 			if (Active)
-				Fade += (float)Time.Delta / FadeTime;
+				Fade += Time.Delta / FadeTime;
 			else
-				Fade -= (float)Time.Delta / FadeTime;
+				Fade -= Time.Delta / FadeTime;
 			Fade = Math.Clamp(Fade, 0, 1);
 			Instance.SetSourceProperty(Source, SourceFloat.Gain, Fade < 0.5f ? 2 * Fade * Fade : 1 - MathF.Pow(-2 * Fade + 2, 2) / 2);
 		}

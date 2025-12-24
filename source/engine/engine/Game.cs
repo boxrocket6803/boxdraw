@@ -1,7 +1,5 @@
 ﻿using Silk.NET.Windowing;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
-[assembly: SuppressMessage("Design", "CA1050:Declare types in namespaces")]
 
 public class Game {
 	static void Main() {
@@ -21,7 +19,7 @@ public class Game {
 	public Scene Scene {get; set;}
 
 	private void Init() {
-		Directory = Path.GetDirectoryName(System.Environment.ProcessPath);
+		Directory = Path.GetDirectoryName(Environment.ProcessPath);
 		var test = Directory == "E:\\engine\\source\\game\\bin";
 		if (test)
 			Directory = "E:\\engine";
@@ -65,18 +63,4 @@ public class Game {
 	}
 
 	private void Destroy()  => Window.Dispose();
-}
-
-public static class Time {
-	public static double Now {get; private set;}
-	public static double RealNow => Now + (Timer?.Elapsed.TotalSeconds ?? 0);
-	public static double Delta {get; private set;}
-
-	private static System.Diagnostics.Stopwatch Timer;
-	public static void Update() {
-		Timer ??= System.Diagnostics.Stopwatch.StartNew();
-		Delta = Timer.Elapsed.TotalSeconds;
-		Now += Delta;
-		Timer.Restart();
-	}
 }
