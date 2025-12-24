@@ -25,6 +25,8 @@ public class Graphics(Game game) {
 		Instance.UseProgram(program.Handle);
 	}
 
+	//TODO functions to instance render meshes
+
 	public void Render() {
 		if (Game.Window.FramebufferSize.X == 0 || Game.Window.FramebufferSize.Y == 0)
 			return;

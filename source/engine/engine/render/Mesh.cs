@@ -5,7 +5,8 @@ public class Mesh {
 	public uint Handle;
 	public uint Count;
 
-	public unsafe void Render() { //calling render here should add to a per frame queue for instance rendering, hash by current program and mesh id
+	//TODO DrawInstanced function
+	public unsafe void Draw() {
 		Graphics.Instance.BindVertexArray(Handle);
 		Graphics.Instance.DrawElements(PrimitiveType.Triangles, Count, DrawElementsType.UnsignedInt, (void*)0);
 	}

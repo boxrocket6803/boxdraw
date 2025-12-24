@@ -2,40 +2,36 @@
 
 public class Material {
 	public Guid Id = Guid.NewGuid();
-	public int Hash;
 	public uint Handle;
+	private readonly Dictionary<string,int> State = [];
 	private readonly Dictionary<string,object> Attributes = [];
 	
 	//TODO we should also be able to load these from files, json makes sense i think
-	public void Activate() => Graphics.UseProgram(this);
-	public void Dispose() {
-		Attributes.Clear();
-		Graphics.Instance.DeleteProgram(Handle);
-		Resident.Remove(Hash);
-	}
-	private bool Check<T>(string property, T value) => Attributes.TryGetValue(property, out var a) && a.GetType() == typeof(T) && value.Equals((T)a);
-	public void Set(string property, float value) {
-		if (Check(property, value))
-			return;
-		Attributes[property] = value;
-		Graphics.UseProgram(this); //TODO this stuff shouldnt actually get set until rendering starts, we dont actually own the handle anymore. Maybe seperate internal attributes list so we dont have to keep setting the same shit
-		Graphics.Instance.Uniform1(Graphics.Instance.GetUniformLocation(Handle, property), value);
-	}
-	public void Set(string property, Vector2 value) {
-		if (Check(property, value))
-			return;
-		Attributes[property] = value;
+	public void Set(string property, float value) => Attributes[property] = value;
+	public void Set(string property, Vector2 value) => Attributes[property] = value;
+	public void Set(string property, Texture value) => Attributes[property] = value;
+	public void Bind() {
 		Graphics.UseProgram(this);
-		Graphics.Instance.Uniform2(Graphics.Instance.GetUniformLocation(Handle, property), value);
-	}
-	public void Set(string property, Texture value) {
-		if (Check(property, value))
-			return;
-		Attributes[property] = value;
-		Graphics.UseProgram(this);
-		var loc = Graphics.Instance.GetUniformLocation(Handle, property);
-		Graphics.Instance.BindTextureUnit((uint)loc, value.Handle);
-		Graphics.Instance.Uniform1(loc, loc);
+		foreach (var attribute in Attributes) {
+			var hc = attribute.Value.GetHashCode();
+			if (State.GetValueOrDefault(attribute.Key) == hc)
+				continue;
+			State[attribute.Key] = hc;
+			var location = Graphics.Instance.GetUniformLocation(Handle, attribute.Key);
+			if (attribute.Value is float flval) {
+				Graphics.Instance.Uniform1(location, flval);
+				continue;
+			}
+			if (attribute.Value is Vector2 v2val) {
+				Graphics.Instance.Uniform2(location, v2val);
+				continue;
+			}
+			if (attribute.Value is Texture tval) {
+				Graphics.Instance.BindTextureUnit((uint)location, tval.Handle);
+				Graphics.Instance.Uniform1(location, location);
+				continue;
+			}
+		}
 	}
 
 	private readonly static Dictionary<int,Material> Resident = [];
@@ -47,11 +43,8 @@ public class Material {
 	public static Material From(Shader vert, Shader frag) {
 		var hc = HashCode.Combine(vert.Hash, frag.Hash);
 		if (Resident.TryGetValue(hc, out var ep))
-			return ep; //TODO this should be a new instance, just using the same handle
-		var p = new Material {
-			Handle = Graphics.Instance.CreateProgram(),
-			Hash = hc,
-		};
+			return new() {Handle = ep.Handle};
+		var p = new Material {Handle = Graphics.Instance.CreateProgram()};
 		Graphics.Instance.AttachShader(p.Handle, vert.Handle);
 		Graphics.Instance.AttachShader(p.Handle, frag.Handle);
 		Graphics.Instance.LinkProgram(p.Handle);
@@ -63,9 +56,14 @@ public class Material {
 		Resident.Add(hc, p);
 		return p;
 	}
-	public static void FlushAll() {
-		foreach (var program in Resident.Values)
-			program.Dispose();
+	public static void FlushAll() { //TODO should be per shader, which is of course really annoying
+		HashSet<uint> handles = new();
+		foreach (var program in Resident.Values) {
+			program.State.Clear();
+			handles.Add(program.Handle);
+		}
+		foreach (var handle in handles)
+			Graphics.Instance.DeleteProgram(handle);
 		Resident.Clear();
 	}
 }
