@@ -1,4 +1,5 @@
-﻿public class Camera2D : Scene.Camera {
+﻿namespace SceneCamera;
+public class Flat : Scene.Camera {
 	public float Zoom {get; set;} = 1;
 	public Vector2 Position {get; set;}
 
