@@ -9,11 +9,13 @@ public class Mesh {
 		return true; //TODO culling
 	}
 	public unsafe void DrawInstanced(List<Transform> transforms) {
-		//TODO bind data
-		Graphics.Instance.BindVertexArray(Handle);
-		Graphics.Instance.DrawElementsInstanced(PrimitiveType.Triangles, Count, DrawElementsType.UnsignedInt, (void*)0, (uint)transforms.Count);
+		foreach (var t in transforms)
+			Draw(t);
+		//TODO bind data, actually instance
+		//Graphics.Instance.BindVertexArray(Handle);
+		//Graphics.Instance.DrawElementsInstanced(PrimitiveType.Triangles, Count, DrawElementsType.UnsignedInt, (void*)0, (uint)transforms.Count);
 	}
-	public unsafe void Draw() {
+	public unsafe void Draw(Transform transform) {
 		Graphics.Instance.BindVertexArray(Handle);
 		Graphics.Instance.DrawElements(PrimitiveType.Triangles, Count, DrawElementsType.UnsignedInt, (void*)0);
 	}
@@ -29,6 +31,7 @@ public class Mesh {
 		};
 		Graphics.Instance.BindVertexArray(m.Handle);
 
+		Graphics.Instance.GenBuffer();
 		Graphics.Instance.BindBuffer(BufferTargetARB.ArrayBuffer, m.Handle);
 		fixed (float* buf = verticies)
 			Graphics.Instance.BufferData(BufferTargetARB.ArrayBuffer, (nuint)(verticies.Length * sizeof(float)), buf, BufferUsageARB.StaticDraw);

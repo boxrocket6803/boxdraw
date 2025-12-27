@@ -30,9 +30,6 @@ public class Assets(Engine engine, string folder) {
 				Resource.Reload(item);
 			if (item == "gameinfo.bcfg" && Folder == "core") {
 				Log.Info("restarting asset system");
-				Material.FlushAll();
-				Shader.FlushAll();
-				Texture.FlushAll();
 				return true;
 			}
 		}
@@ -87,7 +84,7 @@ public class Assets(Engine engine, string folder) {
 		SearchPaths.Add(core);
 		var gameinfo = Resource.Load<GameInfo>("gameinfo.bcfg");
 		if (gameinfo is null || gameinfo.Resources.SearchPaths is null) {
-			Log.Error("core/gameinfo.bcfg missing/invalid!");
+			Log.Error("core/gameinfo.bcfg missing or Resources.SearchPaths invalid!");
 			Log.Info($"mounting\n + 'core'");
 			return;
 		}
@@ -119,6 +116,9 @@ public class Assets(Engine engine, string folder) {
 		var engine = SearchPaths.First().Engine;
 		Init(engine);
 		engine.Window.Title = Resource.Load<GameInfo>("gameinfo.bcfg").Title;
+		Material.FlushAll();
+		Shader.FlushAll();
+		Texture.FlushAll();
 	}
 	public static string ReadText(string path) {
 		foreach (var dir in SearchPaths) {

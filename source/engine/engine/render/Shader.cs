@@ -14,7 +14,6 @@ public class Shader {
 		var hash = HashCode.Combine(path.ToLower(), type);
 		if (Resident.TryGetValue(hash, out var es))
 			return es;
-		Log.Info($"compiling {path}");
 		var s = Graphics.Instance.CreateShader(type);
 		var glsl = Assets.ReadText(path);
 		if (glsl == null)
@@ -24,6 +23,8 @@ public class Shader {
 		Graphics.Instance.GetShader(s, GLEnum.CompileStatus, out var status);
 		if (status != (int)GLEnum.True)
 			Log.Exception($"{path} failed to compile: {Graphics.Instance.GetShaderInfoLog(s)}");
+		else
+			Log.Info($"compiled {path}");
 		var ns = new Shader {
 			Hash = hash,
 			Handle = s

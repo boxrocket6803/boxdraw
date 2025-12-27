@@ -10,7 +10,8 @@ public class Material {
 	public void Set(string property, float value) => Attributes[property] = value;
 	public void Set(string property, Vector2 value) => Attributes[property] = value;
 	public void Set(string property, Texture value) => Attributes[property] = value;
-	public void Bind() {
+	public void Set(string property, Matrix4x4 value) => Attributes[property] = value;
+	public unsafe void Bind() {
 		if (Active != this)
 			Graphics.Instance.UseProgram(Handle);
 		Active = this;
@@ -33,7 +34,12 @@ public class Material {
 				Graphics.Instance.Uniform1(location, location);
 				continue;
 			}
+			if (attribute.Value is Matrix4x4 m3val) {
+				Graphics.Instance.UniformMatrix4(location, 1, false, (float*)&m3val);
+				continue;
+			}
 		}
+		Scene.Active.MainCamera.Update(this);
 	}
 
 	private readonly static Dictionary<int,Material> Resident = [];

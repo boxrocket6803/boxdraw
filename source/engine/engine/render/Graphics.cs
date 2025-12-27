@@ -22,21 +22,24 @@ public class Graphics(Engine game) {
 		public Material Material {get; set;}
 		public List<Transform> Instances {get; set;} = [];
 		public readonly void Render() {
-			Scene.Active.MainCamera.Update(Material);
 			Material.Bind();
 			Mesh.DrawInstanced(Instances);
 		}
 	}
-	private Dictionary<int,Batch> Frame {get; set;} = [];
-	public void Draw(Material material, Mesh mesh, Transform transform)  {
+	private static Dictionary<int,Batch> Frame {get; set;} = [];
+
+	public static void Draw(Material material, Mesh mesh, Transform transform)  {
 		var hc = HashCode.Combine(material.Id, mesh.Id);
 		if (!Frame.TryGetValue(hc, out var batch))
 			batch = Frame[hc] = new() {Material = material, Mesh = mesh};
 		batch.Instances.Add(transform);
 	}
+
+	public static float AspectRatio {get; private set;}
 	public void Render() {
 		if (Game.Window.FramebufferSize.X == 0 || Game.Window.FramebufferSize.Y == 0)
 			return;
+		AspectRatio = Game.Window.FramebufferSize.X / (float)Game.Window.FramebufferSize.Y;
 		//TODO get clear color from camera
 		Instance.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 		Scene.RenderActive();
