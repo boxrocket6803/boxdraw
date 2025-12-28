@@ -10,6 +10,20 @@ public class Shader {
 	}
 
 	private readonly static Dictionary<int,Shader> Resident = [];
+	private static void Precompile(string filename, ref string glsl) {
+		foreach (var line in glsl.Split('\n')) {
+			if (line.Trim().StartsWith("#include")) {
+				var file = line.Trim()["#include".Length..].Trim().Trim('"');
+				var rep = Assets.ReadText(file);
+				if (rep is null)
+					Log.Error($"couldn't find file {file} for #include directive in {filename}");
+				else
+					Precompile(file, ref rep);
+				glsl = glsl.Replace(line, rep);
+				continue;
+			}
+		}
+	}
 	public static Shader Get(string path, ShaderType type) {
 		var hash = HashCode.Combine(path.ToLower(), type);
 		if (Resident.TryGetValue(hash, out var es))
@@ -18,11 +32,12 @@ public class Shader {
 		var glsl = Assets.ReadText(path);
 		if (glsl == null)
 			return new Shader();
+		Precompile(path, ref glsl);
 		Graphics.Instance.ShaderSource(s, glsl);
 		Graphics.Instance.CompileShader(s);
 		Graphics.Instance.GetShader(s, GLEnum.CompileStatus, out var status);
 		if (status != (int)GLEnum.True)
-			Log.Exception($"{path} failed to compile: {Graphics.Instance.GetShaderInfoLog(s)}");
+			Log.Exception($"{path} failed to compile: \n{Graphics.Instance.GetShaderInfoLog(s)}");
 		else
 			Log.Info($"compiled {path}");
 		var ns = new Shader {

@@ -22,7 +22,12 @@ public class Mesh {
 
 	public static Mesh Sprite {get; set;}
 	public static void Init() {
-		Sprite = From([1,1,0,1,0,1,-1,0,1,1,-1,-1,0,0,1,-1,1,0,0,0], [0,1,3,1,2,3]);
+		Sprite = From([
+		 1, 1,0,  0,0,1,  1,0,
+		 1,-1,0,  0,0,1,  1,1,
+		-1,-1,0,  0,0,1,  0,1,
+		-1, 1,0,  0,0,1,  0,0,
+		], [0,1,3,1,2,3]);
 	}
 	public unsafe static Mesh From(float[] verticies, uint[] indicies) {
 		var m = new Mesh {
@@ -41,10 +46,12 @@ public class Mesh {
 		fixed (uint* buf = indicies)
 			Graphics.Instance.BufferData(BufferTargetARB.ElementArrayBuffer, (nuint)(indicies.Length * sizeof(uint)), buf, BufferUsageARB.StaticDraw);
 
-		Graphics.Instance.EnableVertexAttribArray(0);
-		Graphics.Instance.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 5 * sizeof(float), (void*)0);
-		Graphics.Instance.EnableVertexAttribArray(1);
-		Graphics.Instance.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		Graphics.Instance.EnableVertexAttribArray(0); //position
+		Graphics.Instance.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), (void*)0);
+		Graphics.Instance.EnableVertexAttribArray(1); //normal
+		Graphics.Instance.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+		Graphics.Instance.EnableVertexAttribArray(2); //uv
+		Graphics.Instance.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
 		Graphics.Instance.BindVertexArray(0);
 		Graphics.Instance.BindBuffer(BufferTargetARB.ArrayBuffer, 0);

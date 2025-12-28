@@ -1,6 +1,4 @@
-﻿using static Scene;
-
-public class Scene(Engine game) {
+﻿public class Scene(Engine game) {
 	public Engine Game = game;
 
 	public abstract class Object {
@@ -32,7 +30,7 @@ public class Scene(Engine game) {
 			public override void Update(Material program) { //TODO cache matrix with state
 				var hc = HashCode.Combine(WorldTransform, FieldOfView, Graphics.AspectRatio);
 				if (hc != Cache) {
-					View = Matrix4x4.CreateLookAt(Vector3.UnitZ * 20f, Vector3.Zero, Vector3.UnitX); //TODO replace with real numbers
+					View = Matrix4x4.CreateLookAt(Vector3.UnitZ * 5f, Vector3.Zero, Vector3.UnitX); //TODO replace with real numbers
 					Proj = Matrix4x4.CreatePerspectiveFieldOfView(Math.Clamp(FieldOfView * 0.0174533f, 0f, 1.57f), Graphics.AspectRatio, 3f, 4000f);
 					Cache = hc;
 				}

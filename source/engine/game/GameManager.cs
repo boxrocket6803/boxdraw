@@ -1,6 +1,7 @@
 ﻿public class GameManager : Scene.Object {
 	public override void OnCreate() {
 		Scene.Active.MainCamera = new Scene.Camera.Perspective();
+		Model.Load("models/characters/human_base.bmdl");
 		base.OnCreate();
 	}
 
