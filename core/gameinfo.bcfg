@@ -1,7 +1,0 @@
-Title = "TEST",
-Resources = {
-	SearchPaths = [
-		"game",
-		"core",
-	]
-}
