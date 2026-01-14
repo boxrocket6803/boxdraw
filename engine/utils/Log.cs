@@ -14,8 +14,7 @@ public static class Log {
 			if (type == typeof(string))
 				return $"\"{value}\"";
 			if (type.GetInterface(nameof(IEnumerable)) is not null) {
-				var enumerable = value as IEnumerable;
-				if (enumerable is null)
+				if (value is not IEnumerable enumerable)
 					return "null";
 				var any = false;
 				var str = "[";
@@ -56,6 +55,7 @@ public static class Log {
 	public static void Exception(object message) {
 		var str = String('!', message);
 		Trace.WriteLine(str);
+		throw new Exception(str);
 	}
 
 	private static string String(char symbol, object message) {

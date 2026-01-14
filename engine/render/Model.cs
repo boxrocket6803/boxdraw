@@ -11,9 +11,16 @@ public class Model {
 		public Mesh Mesh {get; set;}
 	}
 	private List<MeshChunk> Meshes {get; set;} = [];
-	public void Render(Transform transform) {
-		foreach (var chunk in Meshes)
-			Graphics.Draw(chunk.Material, chunk.Mesh, transform);
+	public void Draw(Transform transform) {
+		if (Graphics.Stage == Graphics.RenderStage.Submit) {
+			foreach (var chunk in Meshes)
+				Graphics.Draw(chunk.Material, chunk.Mesh, transform);
+			return;
+		}
+		foreach (var chunk in Meshes) {
+			chunk.Material.Bind();
+			chunk.Mesh.Draw(transform);
+		}
 	}
 
 	private static Dictionary<string,Model> Resident {get; set;} = [];
@@ -46,7 +53,7 @@ public class Model {
 			var full = string.Join('/', path.Split('/').SkipLast(1));
 			chunk.Material = Material.From(mat) ?? Material.From($"{full}/{mat}") ?? Material.From($"{full}/{path.Split('/').Last().Split('.')[0]}/{mat}");
 			if (chunk.Material is null) {
-				chunk.Material = Material.From("shaders/vs_model.glsl", "shaders/fs_fallback.glsl");
+				chunk.Material = Material.From("shaders/vs_model.glsl", "shaders/fs_fallback.glsl", "shaders/ds_opaque.glsl");
 				Log.Error($"using fallback for missing {mat} (referenced in {path})");
 			}
 			f.ReadByte(); //uv channel count
