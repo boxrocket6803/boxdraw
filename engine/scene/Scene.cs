@@ -22,7 +22,7 @@
 		public virtual void Update(Material program) {}
 
 		public class Perspective : Camera {
-			public Transform WorldTransform {get; set;} = Transform.Indentity;
+			public Transform WorldTransform {get; set;} = Transform.Indentity; //TODO move to Scene.Object
 			public float FieldOfView {get; set;} = 90;
 			private int Cache;
 			private Matrix4x4 View;
@@ -30,7 +30,7 @@
 			public override void Update(Material program) { //TODO cache matrix with state
 				var hc = HashCode.Combine(WorldTransform, FieldOfView, Graphics.AspectRatio);
 				if (hc != Cache) {
-					View = Matrix4x4.CreateLookAt(Vector3.UnitX * 36f + Vector3.UnitZ * 64f, Vector3.UnitZ * 48f, Vector3.UnitZ); //TODO replace with real numbers
+					View = Matrix4x4.CreateLookAt(Vector3.UnitX * 80f + Vector3.UnitZ * 32f, Vector3.UnitZ * 32f, Vector3.UnitZ); //TODO replace with real numbers
 					Proj = Matrix4x4.CreatePerspectiveFieldOfView(Math.Clamp(FieldOfView * 0.0174533f, 0f, 1.57f), Graphics.AspectRatio, 3f, 4000f);
 					Cache = hc;
 				}

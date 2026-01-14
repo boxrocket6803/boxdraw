@@ -61,6 +61,8 @@ public class Material {
 	public static Material From(string file) => From(global::Resource.Load<Resource>(file));
 	public static Material From(Resource r) => r?.GetMaterial() ?? null;
 	public static Material From(string vert, string frag) {
+		if (vert is null || frag is null)
+			return null;
 		var v = Shader.Get(vert, ShaderType.VertexShader);
 		var f = Shader.Get(frag, ShaderType.FragmentShader);
 		return From(v, f);

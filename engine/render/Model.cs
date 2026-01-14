@@ -22,9 +22,16 @@ public class Model {
 			return model;
 		var timer = Stopwatch.StartNew();
 		var r = Assets.GetStream(path);
-		if (r is null)
-			return null;
+		if (r is null) {
+			if (path == "models/error.bmdl")
+				return null; //shit
+			Log.Error($"using fallback for missing {path}");
+			model = Load("models/error.bmdl");
+			Resident.Add(path, model);
+			return model;
+		}
 		var f = new BinaryReader(r);
+		f.ReadByte(); //file type, always 0 for now
 		model = new Model();
 		var bonecount = f.ReadUInt16();
 		for (int i = 0; i < bonecount; i++) {

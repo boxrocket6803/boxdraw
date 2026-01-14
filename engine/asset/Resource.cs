@@ -15,6 +15,8 @@ public class Resource {
 	public static void Reload(string path) {
 		var timer = Stopwatch.StartNew();
 		object Value(Type type, string value) {
+			if (value.Last() == ',')
+				value = value[0..^1];
 			if (value == "null")
 				return null;
 			if (type == typeof(Texture)) {
